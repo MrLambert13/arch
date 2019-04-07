@@ -20,4 +20,9 @@ class MainController
     {
         return $this->render('main/index.html.php');
     }
+
+    public function classAction(): Response
+    {
+        return $this->rendercontent('main/class.html.php');
+    }
 }

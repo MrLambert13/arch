@@ -40,4 +40,9 @@ $routes->add(
     new Route('/user/logout', ['_controller' => [\Controller\UserController::class, 'logoutAction']])
 );
 
+$routes->add(
+    'class_img',
+    new Route('/main/class', ['_controller' => [MainController::class, 'classAction']])
+);
+
 return $routes;
