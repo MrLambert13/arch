@@ -23,6 +23,6 @@ class MainController
 
     public function classAction(): Response
     {
-        return $this->rendercontent('main/class.html.php');
+        return $this->render('main/class.html.php');
     }
 }

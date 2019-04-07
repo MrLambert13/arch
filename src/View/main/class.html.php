@@ -2,7 +2,7 @@
 
 $body = function () {
     echo <<<EOL
-<img src="./Img/Homework1.png"/>
+<img alt="Схема взаимодействия классов" src="./Img/Homework1.png"/>
 EOL;
 };
 
