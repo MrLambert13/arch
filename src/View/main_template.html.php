@@ -24,7 +24,7 @@
                 <td><a href="<?= $path('order_info') ?>">Корзина</a></td>
               </tr>
               <tr>
-                <td><a href="<?= $path('class_img') ?>" target="_blank">СХЕМА КЛАССОВ</a></td>
+                <td><a href="<?= $path('class_img') ?>">СХЕМА КЛАССОВ</a></td>
               </tr>
                 <?php if (!$isAuth) {
                     ?>

@@ -3,7 +3,7 @@
 
 $body = function () use ($image){
     echo <<<EOL
-<img alt="Схема взаимодействия классов" src=$image />
+<img alt="Схема взаимодействия классов" src="%kernel.root_dir%/src/View/main/Img/Homework1.png" />
 EOL;
 };
 

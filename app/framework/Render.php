@@ -28,6 +28,7 @@ trait Render
             return new Response('There is no view file ' . $view, Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
+        //dont understands
         $path = function (string $name, array $parameters = []): string {
             return Registry::getRoute($name, $parameters);
         };

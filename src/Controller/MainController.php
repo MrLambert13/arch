@@ -25,10 +25,14 @@ class MainController
     public function classAction(): Response
     {
         $rootViewPath = Registry::getDataConfig('view.directory');
+
+        $test = Registry::getDataConfig('classImg');
+        var_dump($test);
+
         $imgPath = $rootViewPath . 'main/Img/Homework1.png';
 
         if (!file_exists($imgPath)) {
-            return new Response('There is no img file ', Response::HTTP_INTERNAL_SERVER_ERROR);
+            return new Response('There is no image file ', Response::HTTP_INTERNAL_SERVER_ERROR);
         }
         return $this->render('main/class.html.php', ['image' => $imgPath]);
     }
