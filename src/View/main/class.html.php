@@ -1,9 +1,9 @@
 <?php
+/** @var mixed $image */
 
-use asse
-$body = function () {
+$body = function () use ($image){
     echo <<<EOL
-<img alt="Схема взаимодействия классов" src="./Img/Homework1.png"/>
+<img alt="Схема взаимодействия классов" src=$image />
 EOL;
 };
 

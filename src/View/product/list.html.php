@@ -1,6 +1,7 @@
 <?php
 
 /** @var \Model\Entity\Product[] $productList */
+
 $body = function () use ($productList, $path) {
     ?>
     <table cellpadding="40" cellspacing="0" border="0">

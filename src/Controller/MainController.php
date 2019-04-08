@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Controller;
 
 use Framework\Render;
+use Framework\Registry;
 use Symfony\Component\HttpFoundation\Response;
 
 class MainController
@@ -23,6 +24,12 @@ class MainController
 
     public function classAction(): Response
     {
-        return $this->render('main/class.html.php');
+        $rootViewPath = Registry::getDataConfig('view.directory');
+        $imgPath = $rootViewPath . 'main/Img/Homework1.png';
+
+        if (!file_exists($imgPath)) {
+            return new Response('There is no img file ', Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+        return $this->render('main/class.html.php', ['image' => $imgPath]);
     }
 }

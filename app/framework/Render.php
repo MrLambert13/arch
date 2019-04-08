@@ -14,12 +14,13 @@ trait Render
     /**
      * Отрисовка страницы
      *
-     * @param string $view
-     * @param array $parameters
+     * @param string $view Name fo view file
+     * @param array $parameters Options
      * @return Response
      */
     private function render(string $view, array $parameters = []): Response
     {
+        //Bind view folder
         $rootViewPath = Registry::getDataConfig('view.directory');
         $viewPath = $rootViewPath . $view;
 
