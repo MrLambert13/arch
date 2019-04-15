@@ -9,7 +9,7 @@ class PromoCode implements IDiscount
     /**
      * @var string
      */
-    private $promoCode;
+        private $promoCode;
 
     /**
      * @param string $promoCode
