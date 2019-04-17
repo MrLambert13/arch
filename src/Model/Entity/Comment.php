@@ -37,7 +37,7 @@ class Comment implements SplSubject
      */
     public function attach(SplObserver $observer)
     {
-        // TODO: Implement attach() method.
+        $this->observers->attach($observer);
     }
 
     /**
@@ -53,7 +53,7 @@ class Comment implements SplSubject
      */
     public function detach(SplObserver $observer)
     {
-        // TODO: Implement detach() method.
+        $this->observers->detach($observer);
     }
 
     /**
@@ -64,6 +64,14 @@ class Comment implements SplSubject
      */
     public function notify()
     {
-        // TODO: Implement notify() method.
+        foreach ($this->observers as $observer) {
+            $observer->update($this);
+        }
+    }
+
+    public function save()
+    {
+        //do save comments and call notify
+        $this->notify();
     }
 }
