@@ -3,6 +3,7 @@
 namespace Model\Entity;
 
 use SplObjectStorage;
+use SplObserver;
 use SplSubject;
 
 class Comment implements SplSubject
