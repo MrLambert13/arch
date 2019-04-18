@@ -1,10 +1,16 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Model\Entity;
 
-class User
+use Service\Communication\Email;
+use Service\Communication\Exception\CommunicationException;
+use Service\Communication\Sms;
+use SplObserver;
+use SplSubject;
+
+class User implements SplObserver
 {
     /**
      * @var int
@@ -32,11 +38,11 @@ class User
     private $role;
 
     /**
-     * @param int $id
+     * @param int    $id
      * @param string $name
      * @param string $login
      * @param string $password
-     * @param Role $role
+     * @param Role   $role
      */
     public function __construct(int $id, string $name, string $login, string $password, Role $role)
     {
@@ -85,5 +91,27 @@ class User
     public function getRole(): Role
     {
         return $this->role;
+    }
+
+    /**
+     * Notify
+     *
+     * @param SplSubject $subject
+     */
+    public function update(SplSubject $subject)
+    {
+        $notifyEmail = new Email();
+
+        try {
+            $notifyEmail->process($this, NEW_COMMENT_TEMPLATE);
+        } catch (CommunicationException $e) {
+        }
+
+        $notifySMS = new Sms();
+
+        try {
+            $notifySMS->process($this, NEW_COMMENT_TEMPLATE);
+        } catch (CommunicationException $e) {
+        }
     }
 }
