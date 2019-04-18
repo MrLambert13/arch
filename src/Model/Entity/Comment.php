@@ -28,9 +28,7 @@ class Comment implements SplSubject
      * Attach an SplObserver
      * @link  https://php.net/manual/en/splsubject.attach.php
      *
-     * @param SplObserver $observer <p>
-     *                              The <b>SplObserver</b> to attach.
-     *                              </p>
+     * @param SplObserver $observer
      *
      * @return void
      * @since 5.1.0
@@ -44,9 +42,7 @@ class Comment implements SplSubject
      * Detach an observer
      * @link  https://php.net/manual/en/splsubject.detach.php
      *
-     * @param SplObserver $observer <p>
-     *                              The <b>SplObserver</b> to detach.
-     *                              </p>
+     * @param SplObserver $observer
      *
      * @return void
      * @since 5.1.0
@@ -69,9 +65,12 @@ class Comment implements SplSubject
         }
     }
 
+    /**
+     * When new comment saved, system must notify some users
+     */
     public function save()
     {
-        //do save comments and call notify
+        //todo save comments
         $this->notify();
     }
 }

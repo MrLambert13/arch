@@ -93,6 +93,11 @@ class User implements SplObserver
         return $this->role;
     }
 
+    /**
+     * Notify
+     *
+     * @param SplSubject $subject
+     */
     public function update(SplSubject $subject)
     {
         $notifyEmail = new Email();
