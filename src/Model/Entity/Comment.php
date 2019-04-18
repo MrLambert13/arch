@@ -73,4 +73,16 @@ class Comment implements SplSubject
         //todo save comments
         $this->notify();
     }
+
+    public function create()
+    {
+        //todo create comment
+    }
+
+    public function update()
+    {
+        //todo update comment
+    }
+
+
 }
