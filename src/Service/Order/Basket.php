@@ -1,9 +1,10 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Service\Order;
 
+use Framework\Registry;
 use Model;
 use Service\Billing\Card;
 use Service\Billing\IBilling;
@@ -13,9 +14,10 @@ use Service\Discount\IDiscount;
 use Service\Discount\NullObject;
 use Service\User\ISecurity;
 use Service\User\Security;
+use SplObserver;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
-class Basket
+class Basket implements SplSubject
 {
     /**
      * Сессионный ключ списка всех продуктов корзины
@@ -28,11 +30,20 @@ class Basket
     private $session;
 
     /**
+     * @var array
+     */
+    private $observers = [];
+
+    /**
      * @param SessionInterface $session
      */
     public function __construct(SessionInterface $session)
     {
         $this->session = $session;
+
+        foreach (Registry::getDataConfig('order.observers') as $observer) {
+            $this->attach(new $observer());
+        }
     }
 
     /**
@@ -65,7 +76,6 @@ class Basket
 
     /**
      * Получаем информацию по всем продуктам в корзине
-     *
      * @return Model\Entity\Product[]
      */
     public function getProductsInfo(): array
@@ -76,7 +86,6 @@ class Basket
 
     /**
      * Оформление заказа
-     *
      * @return void
      */
     public function checkout(): void
@@ -98,10 +107,11 @@ class Basket
     /**
      * Проведение всех этапов заказа
      *
-     * @param IDiscount $discount,
-     * @param IBilling $billing,
-     * @param ISecurity $security,
+     * @param IDiscount      $discount ,
+     * @param IBilling       $billing  ,
+     * @param ISecurity      $security ,
      * @param ICommunication $communication
+     *
      * @return void
      */
     public function checkoutProcess(
@@ -109,7 +119,8 @@ class Basket
         IBilling $billing,
         ISecurity $security,
         ICommunication $communication
-    ): void {
+    ): void
+    {
         $totalPrice = 0;
         foreach ($this->getProductsInfo() as $product) {
             $totalPrice += $product->getPrice();
@@ -126,7 +137,6 @@ class Basket
 
     /**
      * Фабричный метод для репозитория Product
-     *
      * @return Model\Repository\Product
      */
     protected function getProductRepository(): Model\Repository\Product
@@ -136,11 +146,55 @@ class Basket
 
     /**
      * Получаем список id товаров корзины
-     *
      * @return array
      */
     private function getProductIds(): array
     {
         return $this->session->get(static::BASKET_DATA_KEY, []);
+    }
+
+    /**
+     * Attach an SplObserver
+     * @link  https://php.net/manual/en/splsubject.attach.php
+     *
+     * @param SplObserver $observer
+     *
+     * @return void
+     * @since 5.1.0
+     */
+    public function attach(SplObserver $observer)
+    {
+        if (!array_key_exists(get_class($observer), $this->observers)) {
+            $this->observers[get_class($observer)] = $observer;
+        }
+    }
+
+    /**
+     * Detach an observer
+     * @link  https://php.net/manual/en/splsubject.detach.php
+     *
+     * @param SplObserver $observer <p>
+     *                              The <b>SplObserver</b> to detach.
+     *                              </p>
+     *
+     * @return void
+     * @since 5.1.0
+     */
+    public function detach(SplObserver $observer)
+    {
+        unset($this->observers[get_class($observer)]);
+    }
+
+    /**
+     * Notify an observer
+     * @link  https://php.net/manual/en/splsubject.notify.php
+     * @return void
+     * @since 5.1.0
+     */
+    public function notify()
+    {
+        foreach ($this->observers as $observer) {
+            $observer->update(null);
+        }
     }
 }
