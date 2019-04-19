@@ -8,10 +8,10 @@ use Model;
 use Model\Entity\User;
 use SplSubject;
 
-define('NEW_COMMENT_TEMPLATE', 'new comment');
-
 class Email implements ICommunication, SplObserver
 {
+    const NEW_COMMENT_TEMPLATE = 'new comment';
+
     /**
      * @inheritdoc
      */
@@ -31,6 +31,6 @@ class Email implements ICommunication, SplObserver
      */
     public function update(SplSubject $subject)
     {
-        $this->process($subject, "", []);
+        $this->process($subject, NEW_COMMENT_TEMPLATE, []);
     }
 }
