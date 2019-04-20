@@ -7,14 +7,17 @@ namespace Service\Order;
 use Framework\Registry;
 use Model;
 use Service\Billing\Card;
+use Service\Billing\Exception\BillingException;
 use Service\Billing\IBilling;
 use Service\Communication\Email;
+use Service\Communication\Exception\CommunicationException;
 use Service\Communication\ICommunication;
 use Service\Discount\IDiscount;
 use Service\Discount\NullObject;
 use Service\User\ISecurity;
 use Service\User\Security;
 use SplObserver;
+use SplSubject;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class Basket implements SplSubject
@@ -90,35 +93,24 @@ class Basket implements SplSubject
      */
     public function checkout(): void
     {
-        // Здесь должна быть некоторая логика выбора способа платежа
-        $billing = new Card();
+        $checkout = new CheckoutBuilder();
+        $checkout->setBilling(new Card());
+        $checkout->setDiscount(new NullObject());
+        $checkout->setCommunication(new Email());
+        $checkout->setSecurity(new Security($this->session));
 
-        // Здесь должна быть некоторая логика получения информации о скидки пользователя
-        $discount = new NullObject();
-
-        // Здесь должна быть некоторая логика получения способа уведомления пользователя о покупке
-        $communication = new Email();
-
-        $security = new Security($this->session);
-
-        $this->checkoutProcess($discount, $billing, $security, $communication);
+        $this->checkoutProcess($checkout->build());
     }
 
     /**
      * Проведение всех этапов заказа
      *
-     * @param IDiscount      $discount ,
-     * @param IBilling       $billing  ,
-     * @param ISecurity      $security ,
-     * @param ICommunication $communication
+     * @param CheckoutBuilder
      *
      * @return void
      */
     public function checkoutProcess(
-        IDiscount $discount,
-        IBilling $billing,
-        ISecurity $security,
-        ICommunication $communication
+        CheckoutBuilder $checkoutBuilder
     ): void
     {
         $totalPrice = 0;
@@ -126,17 +118,24 @@ class Basket implements SplSubject
             $totalPrice += $product->getPrice();
         }
 
-        $discount = $discount->getDiscount();
+        $discount = $checkoutBuilder->getDiscount()->getDiscount();
         $totalPrice = $totalPrice - $totalPrice / 100 * $discount;
 
-        $billing->pay($totalPrice);
+        try {
+            $checkoutBuilder->getBilling()->pay($totalPrice);
+        } catch (BillingException $e) {
+        }
 
-        $user = $security->getUser();
-        $communication->process($user, 'checkout_template');
+        $user = $checkoutBuilder->getSecurity()->getUser();
+        try {
+            $checkoutBuilder->getCommunication()->process($user, 'checkout_template');
+        } catch (CommunicationException $e) {
+        }
     }
 
     /**
      * Фабричный метод для репозитория Product
+     * Классу basket неизвестно какие объекты подклассов ему нужно создавать.
      * @return Model\Repository\Product
      */
     protected function getProductRepository(): Model\Repository\Product

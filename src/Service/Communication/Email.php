@@ -6,6 +6,7 @@ namespace Service\Communication;
 
 use Model;
 use Model\Entity\User;
+use SplObserver;
 use SplSubject;
 
 class Email implements ICommunication, SplObserver
@@ -28,9 +29,13 @@ class Email implements ICommunication, SplObserver
      *
      * @return void
      * @since 5.1.0
+     * @throws Exception\CommunicationException
      */
     public function update(SplSubject $subject)
     {
-        $this->process($subject, NEW_COMMENT_TEMPLATE, []);
+        try {
+            $this->process($subject, self::NEW_COMMENT_TEMPLATE, []);
+        } catch (Exception\CommunicationException $e) {
+        }
     }
 }

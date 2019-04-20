@@ -31,9 +31,13 @@ class Sms implements ICommunication, SplObserver
      *
      * @return void
      * @since 5.1.0
+     * @throws CommunicationException
      */
     public function update(SplSubject $subject)
     {
-        $this->process($subject, NEW_COMMENT_TEMPLATE, []);
+        try {
+            $this->process($subject, self::NEW_COMMENT_TEMPLATE, []);
+        } catch (CommunicationException $e) {
+        }
     }
 }
