@@ -135,7 +135,8 @@ class Basket implements SplSubject
 
     /**
      * Фабричный метод для репозитория Product
-     * Классу basket неизвестно какие объекты подклассов ему нужно создавать.
+     * Классу basket неизвестно какие объекты подклассов ему нужно создавать. Вроде.
+     * Хотя был бы интерфейс было бы лучше.
      * @return Model\Repository\Product
      */
     protected function getProductRepository(): Model\Repository\Product

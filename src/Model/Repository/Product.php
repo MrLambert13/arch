@@ -19,10 +19,21 @@ class Product
         if (!count($ids)) {
             return [];
         }
+        //create empty instance for clone
+        $protoProduct = new Entity\Product();
 
         $productList = [];
         foreach ($this->getDataFromSource(['id' => $ids]) as $item) {
-            $productList[] = new Entity\Product($item['id'], $item['name'], $item['price']);
+            //clone!!! WOW =)
+            $product = clone $protoProduct;
+
+            //set attributes
+            $product->setId($item['id']);
+            $product->setName($item['name']);
+            $product->setPrice($item['price']);
+
+            //add new instance to array
+            $productList[] = $product;
         }
 
         return $productList;
@@ -105,7 +116,9 @@ class Product
         }
 
         $productFilter = function (array $dataSource) use ($search): bool {
-            return in_array($dataSource[key($search)], current($search), true);
+            return in_array($dataSource[key($search)], current(
+
+            ), true);
         };
 
         return array_filter($dataSource, $productFilter);
