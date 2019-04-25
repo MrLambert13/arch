@@ -33,7 +33,7 @@ $routes->add(
 
 $routes->add(
     'user_authentication',
-    new Route('/user/authentication', ['_controller' => [\Controller\UserController::class, 'authenticationAction']])
+    new Route('/user/Authentication', ['_controller' => [\Controller\UserController::class, 'authenticationAction']])
 );
 $routes->add(
     'logout',

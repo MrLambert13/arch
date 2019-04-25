@@ -1,6 +1,9 @@
 <?php
 
-/** @var \Model\Entity\Product[] $productList */
+/** @var \Model\Entity\Product[] $productList
+ * @var $form string
+ */
+
 $body = function () use ($path, $error) {
     ?>
     <form action="<?= $path('user_authentication') ?>" method="post">
@@ -16,6 +19,6 @@ $renderLayout(
     'main_template.html.php',
     [
         'title' => 'Авторизация',
-        'body' => $body,
+        'body' => $form,
     ]
 );
