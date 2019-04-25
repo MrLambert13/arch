@@ -23,19 +23,18 @@ class ProductController
      */
     public function infoAction(Request $request, $id): Response
     {
-        $basket = (new Basket($request->getSession()));
-
+        $product = new Product();
         if ($request->isMethod(Request::METHOD_POST)) {
-            $basket->addProduct((int)$request->request->get('product'));
+            (new Basket($request->getSession()))->addProduct((int)$request->request->get('product'));
         }
 
-        $productInfo = (new Product())->getInfo((int)$id);
+        $productInfo = $product->getOne((int)$id);
 
         if ($productInfo === null) {
             return $this->render('error404.html.php');
         }
 
-        $isInBasket = $basket->isProductInBasket($productInfo->getId());
+        $isInBasket = (new Basket($request->getSession()))->isProductInBasket($productInfo->getId());
 
         return $this->render('product/info.html.php', ['productInfo' => $productInfo, 'isInBasket' => $isInBasket]);
     }

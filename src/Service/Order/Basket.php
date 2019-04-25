@@ -1,21 +1,26 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Service\Order;
 
+use Framework\Registry;
 use Model;
 use Service\Billing\Card;
+use Service\Billing\Exception\BillingException;
 use Service\Billing\IBilling;
 use Service\Communication\Email;
+use Service\Communication\Exception\CommunicationException;
 use Service\Communication\ICommunication;
 use Service\Discount\IDiscount;
 use Service\Discount\NullObject;
 use Service\User\ISecurity;
 use Service\User\Security;
+use SplObserver;
+use SplSubject;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
-class Basket
+class Basket implements SplSubject
 {
     /**
      * Сессионный ключ списка всех продуктов корзины
@@ -28,11 +33,20 @@ class Basket
     private $session;
 
     /**
+     * @var array
+     */
+    private $observers = [];
+
+    /**
      * @param SessionInterface $session
      */
     public function __construct(SessionInterface $session)
     {
         $this->session = $session;
+
+        foreach (Registry::getDataConfig('order.observers') as $observer) {
+            $this->attach(new $observer());
+        }
     }
 
     /**
@@ -65,7 +79,6 @@ class Basket
 
     /**
      * Получаем информацию по всем продуктам в корзине
-     *
      * @return Model\Entity\Product[]
      */
     public function getProductsInfo(): array
@@ -76,57 +89,54 @@ class Basket
 
     /**
      * Оформление заказа
-     *
      * @return void
      */
     public function checkout(): void
     {
-        // Здесь должна быть некоторая логика выбора способа платежа
-        $billing = new Card();
+        $checkout = new CheckoutBuilder();
+        $checkout->setBilling(new Card());
+        $checkout->setDiscount(new NullObject());
+        $checkout->setCommunication(new Email());
+        $checkout->setSecurity(new Security($this->session));
 
-        // Здесь должна быть некоторая логика получения информации о скидки пользователя
-        $discount = new NullObject();
-
-        // Здесь должна быть некоторая логика получения способа уведомления пользователя о покупке
-        $communication = new Email();
-
-        $security = new Security($this->session);
-
-        $this->checkoutProcess($discount, $billing, $security, $communication);
+        $this->checkoutProcess($checkout->build());
     }
 
     /**
      * Проведение всех этапов заказа
      *
-     * @param IDiscount $discount,
-     * @param IBilling $billing,
-     * @param ISecurity $security,
-     * @param ICommunication $communication
+     * @param CheckoutBuilder
+     *
      * @return void
      */
     public function checkoutProcess(
-        IDiscount $discount,
-        IBilling $billing,
-        ISecurity $security,
-        ICommunication $communication
-    ): void {
+        CheckoutBuilder $checkoutBuilder
+    ): void
+    {
         $totalPrice = 0;
         foreach ($this->getProductsInfo() as $product) {
             $totalPrice += $product->getPrice();
         }
 
-        $discount = $discount->getDiscount();
+        $discount = $checkoutBuilder->getDiscount()->getDiscount();
         $totalPrice = $totalPrice - $totalPrice / 100 * $discount;
 
-        $billing->pay($totalPrice);
+        try {
+            $checkoutBuilder->getBilling()->pay($totalPrice);
+        } catch (BillingException $e) {
+        }
 
-        $user = $security->getUser();
-        $communication->process($user, 'checkout_template');
+        $user = $checkoutBuilder->getSecurity()->getUser();
+        try {
+            $checkoutBuilder->getCommunication()->process($user, 'checkout_template');
+        } catch (CommunicationException $e) {
+        }
     }
 
     /**
      * Фабричный метод для репозитория Product
-     *
+     * Классу basket неизвестно какие объекты подклассов ему нужно создавать. Вроде.
+     * Хотя был бы интерфейс было бы лучше.
      * @return Model\Repository\Product
      */
     protected function getProductRepository(): Model\Repository\Product
@@ -136,11 +146,55 @@ class Basket
 
     /**
      * Получаем список id товаров корзины
-     *
      * @return array
      */
     private function getProductIds(): array
     {
         return $this->session->get(static::BASKET_DATA_KEY, []);
+    }
+
+    /**
+     * Attach an SplObserver
+     * @link  https://php.net/manual/en/splsubject.attach.php
+     *
+     * @param SplObserver $observer
+     *
+     * @return void
+     * @since 5.1.0
+     */
+    public function attach(SplObserver $observer)
+    {
+        if (!array_key_exists(get_class($observer), $this->observers)) {
+            $this->observers[get_class($observer)] = $observer;
+        }
+    }
+
+    /**
+     * Detach an observer
+     * @link  https://php.net/manual/en/splsubject.detach.php
+     *
+     * @param SplObserver $observer <p>
+     *                              The <b>SplObserver</b> to detach.
+     *                              </p>
+     *
+     * @return void
+     * @since 5.1.0
+     */
+    public function detach(SplObserver $observer)
+    {
+        unset($this->observers[get_class($observer)]);
+    }
+
+    /**
+     * Notify an observer
+     * @link  https://php.net/manual/en/splsubject.notify.php
+     * @return void
+     * @since 5.1.0
+     */
+    public function notify()
+    {
+        foreach ($this->observers as $observer) {
+            $observer->update(null);
+        }
     }
 }
