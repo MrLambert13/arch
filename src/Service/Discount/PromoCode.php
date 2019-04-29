@@ -4,7 +4,11 @@ declare(strict_types = 1);
 
 namespace Service\Discount;
 
-class PromoCode implements IDiscount
+/**
+ * Class PromoCode - обертка для скидки по промокоду
+ * @package Service\Discount
+ */
+class PromoCode extends BaseDiscountDecorator
 {
     /**
      * @var string
@@ -12,25 +16,19 @@ class PromoCode implements IDiscount
         private $promoCode;
 
     /**
-     * @param string $promoCode
-     */
-    public function __construct(string $promoCode)
-    {
-        $this->promoCode = $promoCode;
-    }
-
-    /**
      * @inheritdoc
      */
     public function getDiscount(): float
     {
-        // Получаем по промокоду размер скидки на заказ в процентах
+        $baseDiscount = parent::getDiscount();
+        // Дупустим примененный промокод в ЛК пользователя привязывает ему какую то скидку,
+        // находим эту скидку
         // $discount = $this->find($this->promoCode)->discount();
-        $discount = 5.50;
+        $discount = 0.50;
 
         // Запрос в систему хранения промокодов для пометки кода как использованный
         // $this->find($this->promoCode)->deactivate();
 
-        return $discount;
+        return $baseDiscount * $discount;
     }
 }

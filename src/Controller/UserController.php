@@ -23,7 +23,6 @@ class UserController
         $login = new Fieldset('login', 'Авторизация');
         $login->add(new Input('login', 'Login', 'text'));
         $login->add(new Input('password', 'Password', 'password'));
-        $login->add(new Input('btn', 'Log in', 'submit'));
         $form->add($login);
 
         return $form;

@@ -6,30 +6,28 @@ namespace Service\Discount;
 
 use Model;
 
-class VipDiscount implements IDiscount
+/**
+ * Class VipDiscount - обертка индивидуальной скидки
+ * @package Service\Discount
+ */
+class VipDiscount extends BaseDiscountDecorator
 {
     /**
      * @var string
      */
     private $user;
 
-    /**
-     * @param Model\Entity\User $user
-     */
-    public function __construct(Model\Entity\User $user)
-    {
-        $this->user = $user;
-    }
 
     /**
      * @inheritdoc
      */
     public function getDiscount(): float
     {
+        $baseDiscount = parent::getDiscount();
         // Получаем индивидуальную скидку VIP пользователя
         // $discount = $this->find($this->user)->discount();
         $discount = 20;
 
-        return $discount;
+        return $baseDiscount * $discount / 100;
     }
 }
