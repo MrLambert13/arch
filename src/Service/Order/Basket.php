@@ -8,17 +8,14 @@ use Framework\Registry;
 use Model;
 use Service\Billing\Card;
 use Service\Billing\Exception\BillingException;
-use Service\Billing\IBilling;
 use Service\Communication\Email;
 use Service\Communication\Exception\CommunicationException;
-use Service\Communication\ICommunication;
-use Service\Discount\IDiscount;
 use Service\Discount\NullObject;
-use Service\User\ISecurity;
 use Service\User\Security;
 use SplObserver;
 use SplSubject;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Service\Order\TransactionPattern;
 
 class Basket implements SplSubject
 {

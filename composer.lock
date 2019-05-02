@@ -4,7 +4,7 @@
       "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-  "content-hash": "cb3423abf82eff66215f46c889bba80d",
+  "content-hash": "246631c5776674b2eea6a7fce7c46ae4",
     "packages": [
         {
             "name": "psr/container",
@@ -221,6 +221,78 @@
             "homepage": "https://symfony.com",
         "time": "2019-04-01T14:03:25+00:00"
         },
+      {
+        "name": "symfony/console",
+        "version": "v4.2.8",
+        "source": {
+          "type": "git",
+          "url": "https://github.com/symfony/console.git",
+          "reference": "e2840bb38bddad7a0feaf85931e38fdcffdb2f81"
+        },
+        "dist": {
+          "type": "zip",
+          "url": "https://api.github.com/repos/symfony/console/zipball/e2840bb38bddad7a0feaf85931e38fdcffdb2f81",
+          "reference": "e2840bb38bddad7a0feaf85931e38fdcffdb2f81",
+          "shasum": ""
+        },
+        "require": {
+          "php": "^7.1.3",
+          "symfony/contracts": "^1.0",
+          "symfony/polyfill-mbstring": "~1.0"
+        },
+        "conflict": {
+          "symfony/dependency-injection": "<3.4",
+          "symfony/process": "<3.3"
+        },
+        "provide": {
+          "psr/log-implementation": "1.0"
+        },
+        "require-dev": {
+          "psr/log": "~1.0",
+          "symfony/config": "~3.4|~4.0",
+          "symfony/dependency-injection": "~3.4|~4.0",
+          "symfony/event-dispatcher": "~3.4|~4.0",
+          "symfony/lock": "~3.4|~4.0",
+          "symfony/process": "~3.4|~4.0"
+        },
+        "suggest": {
+          "psr/log": "For using the console logger",
+          "symfony/event-dispatcher": "",
+          "symfony/lock": "",
+          "symfony/process": ""
+        },
+        "type": "library",
+        "extra": {
+          "branch-alias": {
+            "dev-master": "4.2-dev"
+          }
+        },
+        "autoload": {
+          "psr-4": {
+            "Symfony\\Component\\Console\\": ""
+          },
+          "exclude-from-classmap": [
+            "/Tests/"
+          ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+          "MIT"
+        ],
+        "authors": [
+          {
+            "name": "Fabien Potencier",
+            "email": "fabien@symfony.com"
+          },
+          {
+            "name": "Symfony Community",
+            "homepage": "https://symfony.com/contributors"
+          }
+        ],
+        "description": "Symfony Console Component",
+        "homepage": "https://symfony.com",
+        "time": "2019-04-08T14:23:48+00:00"
+      },
       {
         "name": "symfony/contracts",
         "version": "v1.0.2",
@@ -2606,78 +2678,6 @@
             "description": "Library that helps with managing the version number of Git-hosted PHP projects",
             "homepage": "https://github.com/sebastianbergmann/version",
           "time": "2016-10-03T07:35:21+00:00"
-        },
-        {
-            "name": "symfony/console",
-          "version": "v4.2.5",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/console.git",
-              "reference": "24206aff3efe6962593297e57ef697ebb220e384"
-            },
-            "dist": {
-                "type": "zip",
-              "url": "https://api.github.com/repos/symfony/console/zipball/24206aff3efe6962593297e57ef697ebb220e384",
-              "reference": "24206aff3efe6962593297e57ef697ebb220e384",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^7.1.3",
-              "symfony/contracts": "^1.0",
-                "symfony/polyfill-mbstring": "~1.0"
-            },
-            "conflict": {
-                "symfony/dependency-injection": "<3.4",
-                "symfony/process": "<3.3"
-            },
-          "provide": {
-            "psr/log-implementation": "1.0"
-          },
-            "require-dev": {
-                "psr/log": "~1.0",
-                "symfony/config": "~3.4|~4.0",
-                "symfony/dependency-injection": "~3.4|~4.0",
-                "symfony/event-dispatcher": "~3.4|~4.0",
-                "symfony/lock": "~3.4|~4.0",
-                "symfony/process": "~3.4|~4.0"
-            },
-            "suggest": {
-              "psr/log": "For using the console logger",
-                "symfony/event-dispatcher": "",
-                "symfony/lock": "",
-                "symfony/process": ""
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                  "dev-master": "4.2-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Symfony\\Component\\Console\\": ""
-                },
-                "exclude-from-classmap": [
-                    "/Tests/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
-                },
-                {
-                    "name": "Symfony Community",
-                    "homepage": "https://symfony.com/contributors"
-                }
-            ],
-            "description": "Symfony Console Component",
-            "homepage": "https://symfony.com",
-          "time": "2019-04-01T07:32:59+00:00"
         },
         {
             "name": "symfony/finder",
